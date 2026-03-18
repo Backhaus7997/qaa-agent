@@ -13,7 +13,7 @@
 - [x] **INFRA-04**: State management creates and updates QA_STATE.md tracking scan→analyze→generate→validate→deliver pipeline
 - [x] **INFRA-05**: Frontmatter parser reads/writes YAML frontmatter in all QA artifacts
 - [x] **INFRA-06**: Atomic commit system stages specific files and commits with descriptive messages
-- [ ] **INFRA-07**: Init system returns all workflow context as single JSON (models, paths, flags, state)
+- [x] **INFRA-07**: Init system returns all workflow context as single JSON (models, paths, flags, state)
 
 ### Agent Types
 
@@ -103,7 +103,7 @@
 | INFRA-04 | Phase 1 | Complete |
 | INFRA-05 | Phase 1 | Complete |
 | INFRA-06 | Phase 1 | Complete |
-| INFRA-07 | Phase 1 | Pending |
+| INFRA-07 | Phase 1 | Complete |
 | TMPL-01 | Phase 2 | Pending |
 | TMPL-02 | Phase 2 | Pending |
 | TMPL-03 | Phase 2 | Pending |

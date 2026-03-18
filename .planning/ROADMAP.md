@@ -12,7 +12,7 @@ This roadmap delivers a multi-agent QA automation system that any Capmation QA e
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Core Infrastructure** - CLI tooling, config system, state management, frontmatter parsing, and init bootstrapping
+- [x] **Phase 1: Core Infrastructure** - CLI tooling, config system, state management, frontmatter parsing, and init bootstrapping
 - [ ] **Phase 2: QA Standards and Templates** - All artifact templates and CLAUDE.md standards that agents reference when producing output
 - [ ] **Phase 3: Discovery Agents** - Scanner and analyzer agents that read a repo and produce analysis artifacts
 - [ ] **Phase 4: Generation Agents** - Planner, executor, validator, test-ID injector, and bug detective agents that produce and validate test suites
@@ -34,11 +34,11 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 5 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Foundation modules: model-profiles, core, frontmatter
-- [ ] 01-02-PLAN.md — Config and state management modules
-- [ ] 01-03-PLAN.md — Mid-tier modules: roadmap, template, milestone
-- [ ] 01-04-PLAN.md — Phase CRUD and standalone commands (commit system)
-- [ ] 01-05-PLAN.md — Verify suite, init system, and CLI router
+- [x] 01-01-PLAN.md — Foundation modules: model-profiles, core, frontmatter
+- [x] 01-02-PLAN.md — Config and state management modules
+- [x] 01-03-PLAN.md — Mid-tier modules: roadmap, template, milestone
+- [x] 01-04-PLAN.md — Phase CRUD and standalone commands (commit system)
+- [x] 01-05-PLAN.md — Verify suite, init system, and CLI router
 
 ### Phase 2: QA Standards and Templates
 **Goal**: Every QA artifact the system produces has a defined template with required sections, and all generated output conforms to documented QA standards
@@ -128,7 +128,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Core Infrastructure | 0/5 | Not started | - |
+| 1. Core Infrastructure | 5/5 | Complete | 2026-03-18 |
 | 2. QA Standards and Templates | 0/0 | Not started | - |
 | 3. Discovery Agents | 0/0 | Not started | - |
 | 4. Generation Agents | 0/0 | Not started | - |
