@@ -31,11 +31,14 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Running `qa-tools.cjs state` creates QA_STATE.md and tracks pipeline progression through scan, analyze, generate, validate, deliver stages
   4. Running `qa-tools.cjs commit` stages specific files and commits with descriptive messages without staging unrelated changes
   5. Frontmatter parser correctly reads and writes YAML frontmatter blocks in markdown files
-**Plans**: TBD
+**Plans**: 5 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01-PLAN.md — Foundation modules: model-profiles, core, frontmatter
+- [ ] 01-02-PLAN.md — Config and state management modules
+- [ ] 01-03-PLAN.md — Mid-tier modules: roadmap, template, milestone
+- [ ] 01-04-PLAN.md — Phase CRUD and standalone commands (commit system)
+- [ ] 01-05-PLAN.md — Verify suite, init system, and CLI router
 
 ### Phase 2: QA Standards and Templates
 **Goal**: Every QA artifact the system produces has a defined template with required sections, and all generated output conforms to documented QA standards
@@ -125,7 +128,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Core Infrastructure | 0/0 | Not started | - |
+| 1. Core Infrastructure | 0/5 | Not started | - |
 | 2. QA Standards and Templates | 0/0 | Not started | - |
 | 3. Discovery Agents | 0/0 | Not started | - |
 | 4. Generation Agents | 0/0 | Not started | - |
