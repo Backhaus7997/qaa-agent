@@ -1,5 +1,11 @@
 ---
-gsd_state_version: 1.0
+qaa_state_version: 1.0
+pipeline:
+  scan_status: pending
+  analyze_status: pending
+  generate_status: pending
+  validate_status: pending
+  deliver_status: pending
 milestone: v1.0
 milestone_name: milestone
 status: verifying
