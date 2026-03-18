@@ -131,7 +131,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Core Infrastructure | 5/5 | Complete | 2026-03-18 |
-| 2. QA Standards and Templates | 1/4 | In Progress | - |
+| 2. QA Standards and Templates | 2/4 | In Progress | - |
 | 3. Discovery Agents | 0/0 | Not started | - |
 | 4. Generation Agents | 0/0 | Not started | - |
 | 5. Workflow Orchestration | 0/0 | Not started | - |
