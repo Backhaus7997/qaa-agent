@@ -37,15 +37,15 @@
 
 ### Templates
 
-- [ ] **TMPL-01**: QA_ANALYSIS.md template (architecture overview, risks, unit test targets, API targets, pyramid distribution)
-- [ ] **TMPL-02**: TEST_INVENTORY.md template (pyramid-based test cases: unit → integration → API → E2E, each with ID/target/inputs/outcome/priority)
+- [x] **TMPL-01**: QA_ANALYSIS.md template (architecture overview, risks, unit test targets, API targets, pyramid distribution)
+- [x] **TMPL-02**: TEST_INVENTORY.md template (pyramid-based test cases: unit → integration → API → E2E, each with ID/target/inputs/outcome/priority)
 - [x] **TMPL-03**: QA_REPO_BLUEPRINT.md template (repo name, folder structure, stack, configs, CI/CD, Definition of Done)
 - [x] **TMPL-04**: VALIDATION_REPORT.md template (pass/fail per file per layer, confidence level)
-- [ ] **TMPL-05**: SCAN_MANIFEST.md template (file tree, framework detection, testable surfaces)
+- [x] **TMPL-05**: SCAN_MANIFEST.md template (file tree, framework detection, testable surfaces)
 - [x] **TMPL-06**: FAILURE_CLASSIFICATION_REPORT.md template (classification table, evidence, confidence levels)
-- [ ] **TMPL-07**: TESTID_AUDIT_REPORT.md template (coverage score, missing elements, proposed values by priority)
-- [ ] **TMPL-08**: GAP_ANALYSIS.md template (coverage map, missing tests prioritized, broken tests)
-- [ ] **TMPL-09**: QA_AUDIT_REPORT.md template (6-dimension scoring, critical issues, recommendations)
+- [x] **TMPL-07**: TESTID_AUDIT_REPORT.md template (coverage score, missing elements, proposed values by priority)
+- [x] **TMPL-08**: GAP_ANALYSIS.md template (coverage map, missing tests prioritized, broken tests)
+- [x] **TMPL-09**: QA_AUDIT_REPORT.md template (6-dimension scoring, critical issues, recommendations)
 - [ ] **TMPL-10**: CLAUDE.md with complete QA standards (pyramid, locators, POM, assertions, naming, quality gates)
 
 ### Delivery
@@ -104,15 +104,15 @@
 | INFRA-05 | Phase 1 | Complete |
 | INFRA-06 | Phase 1 | Complete |
 | INFRA-07 | Phase 1 | Complete |
-| TMPL-01 | Phase 2 | Pending |
-| TMPL-02 | Phase 2 | Pending |
+| TMPL-01 | Phase 2 | Complete |
+| TMPL-02 | Phase 2 | Complete |
 | TMPL-03 | Phase 2 | Complete |
 | TMPL-04 | Phase 2 | Complete |
-| TMPL-05 | Phase 2 | Pending |
+| TMPL-05 | Phase 2 | Complete |
 | TMPL-06 | Phase 2 | Complete |
-| TMPL-07 | Phase 2 | Pending |
-| TMPL-08 | Phase 2 | Pending |
-| TMPL-09 | Phase 2 | Pending |
+| TMPL-07 | Phase 2 | Complete |
+| TMPL-08 | Phase 2 | Complete |
+| TMPL-09 | Phase 2 | Complete |
 | TMPL-10 | Phase 2 | Pending |
 | AGENT-01 | Phase 3 | Pending |
 | AGENT-02 | Phase 3 | Pending |
