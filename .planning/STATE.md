@@ -1,16 +1,10 @@
 ---
 qaa_state_version: 1.0
-pipeline:
-  scan_status: pending
-  analyze_status: pending
-  generate_status: pending
-  validate_status: pending
-  deliver_status: pending
 milestone: v1.0
 milestone_name: milestone
 status: verifying
 stopped_at: Completed 01-05-PLAN.md
-last_updated: "2026-03-18T18:30:59.157Z"
+last_updated: "2026-03-18T18:39:24.142Z"
 last_activity: 2026-03-18 -- Completed 01-05 Verify, Init, and CLI Router
 progress:
   total_phases: 6
@@ -18,6 +12,12 @@ progress:
   total_plans: 5
   completed_plans: 5
   percent: 100
+pipeline:
+  scan_status: pending
+  analyze_status: pending
+  generate_status: pending
+  validate_status: pending
+  deliver_status: pending
 ---
 
 # Project State
