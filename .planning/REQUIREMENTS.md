@@ -86,8 +86,8 @@
 
 | Feature | Reason |
 |---------|--------|
-| Cloud deployment | Local-only by design — each engineer runs from terminal |
-| External frameworks (LangGraph, Ruflo) | Claude Code native — no external dependencies |
+| Cloud deployment | Local-only by design -- each engineer runs from terminal |
+| External frameworks (LangGraph, Ruflo) | Claude Code native -- no external dependencies |
 | Test execution against live environments | Agent generates code, doesn't run against prod |
 | Real-time collaboration | One agent per engineer per run |
 | Custom UI/dashboard | Terminal interaction via Claude Code only |
@@ -104,30 +104,30 @@
 | INFRA-05 | Phase 1 | Pending |
 | INFRA-06 | Phase 1 | Pending |
 | INFRA-07 | Phase 1 | Pending |
-| AGENT-01 | Phase 2 | Pending |
-| AGENT-02 | Phase 2 | Pending |
-| AGENT-03 | Phase 2 | Pending |
-| AGENT-04 | Phase 2 | Pending |
-| AGENT-05 | Phase 2 | Pending |
-| AGENT-06 | Phase 2 | Pending |
-| AGENT-07 | Phase 2 | Pending |
-| FLOW-01 | Phase 3 | Pending |
-| FLOW-02 | Phase 3 | Pending |
-| FLOW-03 | Phase 3 | Pending |
-| FLOW-04 | Phase 3 | Pending |
-| FLOW-05 | Phase 3 | Pending |
-| FLOW-06 | Phase 4 | Pending |
-| FLOW-07 | Phase 4 | Pending |
-| TMPL-01 | Phase 5 | Pending |
-| TMPL-02 | Phase 5 | Pending |
-| TMPL-03 | Phase 5 | Pending |
-| TMPL-04 | Phase 5 | Pending |
-| TMPL-05 | Phase 5 | Pending |
-| TMPL-06 | Phase 5 | Pending |
-| TMPL-07 | Phase 5 | Pending |
-| TMPL-08 | Phase 5 | Pending |
-| TMPL-09 | Phase 5 | Pending |
-| TMPL-10 | Phase 5 | Pending |
+| TMPL-01 | Phase 2 | Pending |
+| TMPL-02 | Phase 2 | Pending |
+| TMPL-03 | Phase 2 | Pending |
+| TMPL-04 | Phase 2 | Pending |
+| TMPL-05 | Phase 2 | Pending |
+| TMPL-06 | Phase 2 | Pending |
+| TMPL-07 | Phase 2 | Pending |
+| TMPL-08 | Phase 2 | Pending |
+| TMPL-09 | Phase 2 | Pending |
+| TMPL-10 | Phase 2 | Pending |
+| AGENT-01 | Phase 3 | Pending |
+| AGENT-02 | Phase 3 | Pending |
+| AGENT-03 | Phase 4 | Pending |
+| AGENT-04 | Phase 4 | Pending |
+| AGENT-05 | Phase 4 | Pending |
+| AGENT-06 | Phase 4 | Pending |
+| AGENT-07 | Phase 4 | Pending |
+| FLOW-01 | Phase 5 | Pending |
+| FLOW-02 | Phase 5 | Pending |
+| FLOW-03 | Phase 5 | Pending |
+| FLOW-04 | Phase 5 | Pending |
+| FLOW-05 | Phase 5 | Pending |
+| FLOW-06 | Phase 5 | Pending |
+| FLOW-07 | Phase 5 | Pending |
 | DLVR-01 | Phase 6 | Pending |
 | DLVR-02 | Phase 6 | Pending |
 | DLVR-03 | Phase 6 | Pending |
@@ -136,13 +136,13 @@
 | UX-02 | Phase 6 | Pending |
 | UX-03 | Phase 6 | Pending |
 | UX-04 | Phase 6 | Pending |
-| UX-05 | Phase 7 | Pending |
+| UX-05 | Phase 6 | Pending |
 
 **Coverage:**
-- v1 requirements: 38 total
-- Mapped to phases: 38
+- v1 requirements: 40 total
+- Mapped to phases: 40
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-18*
-*Last updated: 2026-03-18 after initial definition*
+*Last updated: 2026-03-18 after roadmap creation*
