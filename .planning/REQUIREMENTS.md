@@ -9,8 +9,8 @@
 
 - [ ] **INFRA-01**: qa-tools.cjs CLI accepts init, state, config, commit commands with JSON output
 - [x] **INFRA-02**: Model profiles system resolves agent-specific models from quality/balanced/budget/inherit profiles
-- [ ] **INFRA-03**: Config system reads/writes .planning/config.json with mode, granularity, parallelization, workflow flags
-- [ ] **INFRA-04**: State management creates and updates QA_STATE.md tracking scan→analyze→generate→validate→deliver pipeline
+- [x] **INFRA-03**: Config system reads/writes .planning/config.json with mode, granularity, parallelization, workflow flags
+- [x] **INFRA-04**: State management creates and updates QA_STATE.md tracking scan→analyze→generate→validate→deliver pipeline
 - [x] **INFRA-05**: Frontmatter parser reads/writes YAML frontmatter in all QA artifacts
 - [ ] **INFRA-06**: Atomic commit system stages specific files and commits with descriptive messages
 - [ ] **INFRA-07**: Init system returns all workflow context as single JSON (models, paths, flags, state)
@@ -99,8 +99,8 @@
 |-------------|-------|--------|
 | INFRA-01 | Phase 1 | Pending |
 | INFRA-02 | Phase 1 | Complete |
-| INFRA-03 | Phase 1 | Pending |
-| INFRA-04 | Phase 1 | Pending |
+| INFRA-03 | Phase 1 | Complete |
+| INFRA-04 | Phase 1 | Complete |
 | INFRA-05 | Phase 1 | Complete |
 | INFRA-06 | Phase 1 | Pending |
 | INFRA-07 | Phase 1 | Pending |
