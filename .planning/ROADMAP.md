@@ -54,8 +54,8 @@ Plans:
 Plans:
 - [x] 02-01-PLAN.md — Analysis-pipeline templates: SCAN_MANIFEST, QA_ANALYSIS, TEST_INVENTORY
 - [x] 02-02-PLAN.md — Blueprint and validation templates: QA_REPO_BLUEPRINT, VALIDATION_REPORT, FAILURE_CLASSIFICATION
-- [ ] 02-03-PLAN.md — Audit and gap templates: TESTID_AUDIT_REPORT, GAP_ANALYSIS, QA_AUDIT_REPORT
-- [ ] 02-04-PLAN.md — Enhanced CLAUDE.md with QA standards and agent coordination rules
+- [x] 02-03-PLAN.md — Audit and gap templates: TESTID_AUDIT_REPORT, GAP_ANALYSIS, QA_AUDIT_REPORT
+- [x] 02-04-PLAN.md — Enhanced CLAUDE.md with QA standards and agent coordination rules
 
 ### Phase 3: Discovery Agents
 **Goal**: QA engineer can point the scanner at any supported repo and get a complete analysis of its architecture, risks, testable surfaces, and prioritized test cases
@@ -131,7 +131,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Core Infrastructure | 5/5 | Complete | 2026-03-18 |
-| 2. QA Standards and Templates | 2/4 | In Progress | - |
+| 2. QA Standards and Templates | 4/4 | Complete | 2026-03-18 |
 | 3. Discovery Agents | 0/0 | Not started | - |
 | 4. Generation Agents | 0/0 | Not started | - |
 | 5. Workflow Orchestration | 0/0 | Not started | - |
