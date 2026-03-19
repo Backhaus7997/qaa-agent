@@ -66,11 +66,11 @@ Plans:
   2. Analyzer agent consumes SCAN_MANIFEST.md and produces QA_ANALYSIS.md with architecture overview, risk assessment (HIGH/MEDIUM/LOW), top 10 unit test targets, API targets, and testing pyramid distribution adjusted to the repo
   3. Analyzer agent produces TEST_INVENTORY.md with pyramid-based test cases (unit, integration, API, E2E) where every test case has a unique ID, target, concrete inputs, explicit expected outcome, and priority
   4. Both agents write output conforming to their respective templates from Phase 2
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
+- [ ] 03-01-PLAN.md — Scanner agent workflow: repo scanning, framework detection, SCAN_MANIFEST.md production
+- [ ] 03-02-PLAN.md — Analyzer agent workflow: QA_ANALYSIS.md, TEST_INVENTORY.md, and optional QA_REPO_BLUEPRINT.md production
 
 ### Phase 4: Generation Agents
 **Goal**: QA engineer gets a validated, standards-compliant test suite generated from analysis, with test IDs injected into frontend code and failures classified with evidence
@@ -132,7 +132,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 |-------|----------------|--------|-----------|
 | 1. Core Infrastructure | 5/5 | Complete | 2026-03-18 |
 | 2. QA Standards and Templates | 4/4 | Complete | 2026-03-18 |
-| 3. Discovery Agents | 0/0 | Not started | - |
+| 3. Discovery Agents | 0/2 | In Progress | - |
 | 4. Generation Agents | 0/0 | Not started | - |
 | 5. Workflow Orchestration | 0/0 | Not started | - |
 | 6. Delivery and User Experience | 0/0 | Not started | - |
