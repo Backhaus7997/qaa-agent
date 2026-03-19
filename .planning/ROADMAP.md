@@ -115,12 +115,12 @@ Plans:
   3. PR description includes analysis summary, test counts by pyramid level, coverage metrics, and validation pass/fail status
   4. /qa-analyze runs analysis-only (no generation, no PR), /qa-validate validates existing tests and classifies failures, and additional slash commands (/qa-testid, /qa-fix, /qa-pom, /qa-audit, /qa-gap, /qa-blueprint, /qa-report, /qa-pyramid) each perform their focused task
   5. README.md explains installation, configuration, workflow options, and usage so any QA engineer can start using the system without assistance
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
-- [ ] 06-03: TBD
+- [ ] 06-01-PLAN.md — Deliver stage implementation in orchestrator + PR template
+- [ ] 06-02-PLAN.md — Rewrite all 13 slash commands to invoke real agent pipeline
+- [ ] 06-03-PLAN.md — README.md with installation, commands, workflow options, and troubleshooting
 
 ## Progress
 
@@ -134,4 +134,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 3. Discovery Agents | 2/2 | Complete | 2026-03-19 |
 | 4. Generation Agents | 2/3 | In Progress | - |
 | 5. Workflow Orchestration | 2/2 | Complete | 2026-03-19 |
-| 6. Delivery and User Experience | 0/0 | Not started | - |
+| 6. Delivery and User Experience | 0/3 | Not started | - |
