@@ -21,9 +21,9 @@
 - [x] **AGENT-02**: qa-analyzer agent produces QA_ANALYSIS.md (architecture, risks, top 10 targets, pyramid) and TEST_INVENTORY.md (pyramid-based test cases with IDs and explicit outcomes)
 - [ ] **AGENT-03**: qa-planner agent creates test generation plans with task breakdown, dependencies, and file assignments
 - [ ] **AGENT-04**: qa-executor agent writes actual test files (POM, specs, fixtures, config) following CLAUDE.md standards
-- [ ] **AGENT-05**: qa-validator agent runs 4-layer validation (syntax, structure, dependencies, logic) with max 3 fix loops
+- [x] **AGENT-05**: qa-validator agent runs 4-layer validation (syntax, structure, dependencies, logic) with max 3 fix loops
 - [x] **AGENT-06**: qa-testid-injector agent scans frontend code, audits missing data-testid, injects following naming convention
-- [ ] **AGENT-07**: qa-bug-detective agent classifies test failures as APP BUG / TEST ERROR / ENV ISSUE / INCONCLUSIVE with evidence
+- [x] **AGENT-07**: qa-bug-detective agent classifies test failures as APP BUG / TEST ERROR / ENV ISSUE / INCONCLUSIVE with evidence
 
 ### Workflows
 
@@ -118,9 +118,9 @@
 | AGENT-02 | Phase 3 | Complete |
 | AGENT-03 | Phase 4 | Pending |
 | AGENT-04 | Phase 4 | Pending |
-| AGENT-05 | Phase 4 | Pending |
+| AGENT-05 | Phase 4 | Complete |
 | AGENT-06 | Phase 4 | Complete |
-| AGENT-07 | Phase 4 | Pending |
+| AGENT-07 | Phase 4 | Complete |
 | FLOW-01 | Phase 5 | Pending |
 | FLOW-02 | Phase 5 | Pending |
 | FLOW-03 | Phase 5 | Pending |

@@ -3,31 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in-progress
-stopped_at: Completed 04-03-PLAN.md
+stopped_at: Completed 04-02-PLAN.md
 last_updated: "2026-03-19T14:28:49.229Z"
-last_activity: 2026-03-19 -- Completed 04-03 Test-ID Injector Agent Workflow
+last_activity: 2026-03-19 -- Completed 04-02 Validator and Bug Detective Agent Workflows
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 14
-  completed_plans: 13
-  percent: 93
----
-
----
-gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: in-progress
-stopped_at: Completed 04-03-PLAN.md
-last_updated: "2026-03-19T14:27:27Z"
-last_activity: 2026-03-19 -- Completed 04-03 Test-ID Injector Agent Workflow
-progress:
-  [█████████░] 93%
-  completed_phases: 3
-  total_plans: 14
-  completed_plans: 12
-  percent: 86
+  completed_plans: 14
+  percent: 100
 ---
 
 # Project State
@@ -37,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-18)
 
 **Core value:** Any QA engineer can point the agent at a client repo and get a complete, standards-compliant test suite as a reviewable PR.
-**Current focus:** Phase 4 In Progress -- Generation Agents (3 of 3 plans complete in current wave)
+**Current focus:** Phase 4 Complete -- Ready for Phase 5: Workflow Orchestration
 
 ## Current Position
 
-Phase: 4 of 6 (Generation Agents) -- IN PROGRESS
-Plan: 3 of 3 in current phase (04-03 complete)
-Status: Phase 4 plan 3 complete (testid-injector agent)
-Last activity: 2026-03-19 -- Completed 04-03 Test-ID Injector Agent Workflow
+Phase: 4 of 6 (Generation Agents) -- COMPLETE
+Plan: 3 of 3 in current phase (all complete)
+Status: Phase 4 complete, ready for Phase 5
+Last activity: 2026-03-19 -- Completed 04-02 Validator and Bug Detective Agent Workflows
 
-Progress: [█████████░] 86%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -77,6 +61,8 @@ Progress: [█████████░] 86%
 
 *Updated after each plan completion*
 | Phase 03 P02 | 3min | 1 tasks | 1 files |
+| Phase 04 P01 | 5min | 2 tasks | 2 files |
+| Phase 04 P02 | 6min | 2 tasks | 2 files |
 | Phase 04 P03 | 4min | 1 tasks | 1 files |
 
 ## Accumulated Context
@@ -117,6 +103,8 @@ Recent decisions affecting current work:
 - [Phase 03]: Anti-pattern check mandatory before finalizing TEST_INVENTORY.md -- scans every expected_outcome for vague words
 - [Phase 04]: Testid-injector encodes all 4 CONTEXT.md locked decisions as enforced step logic: separate branch, P0 default, audit-first with checkpoint, preserve existing values
 - [Phase 04]: Quality gate pattern: 8 template items verbatim + 6 agent-specific checks (14 total) consistent with scanner/analyzer pattern
+- [Phase 04]: Validator encodes all 8 CONTEXT.md locked decisions: self-fixes, fail-fast sequential, max 3 loops, generated-only scope, Layer 4 cross-check, HIGH/MEDIUM/LOW confidence, fix history, no-commit
+- [Phase 04]: Bug detective encodes all 3 CONTEXT.md locked decisions: never touches app code, actually runs tests, 4-category classification with evidence
 
 ### Pending Todos
 
@@ -128,6 +116,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-19T14:27:27.360Z
-Stopped at: Completed 04-03-PLAN.md
+Last session: 2026-03-19T14:28:49Z
+Stopped at: Completed 04-02-PLAN.md
 Resume file: None
