@@ -1,6 +1,6 @@
 # QAA -- QA Automation Agent
 
-Multi-agent QA automation system for Claude Code. Point it at any repository -- it analyzes the codebase, generates a standards-compliant test suite, validates everything, and delivers the result as a draft PR. Built for QA engineers at Capmation. Runs locally via Claude Code.
+Multi-agent QA automation system for Claude Code. Point it at any repository -- it analyzes the codebase, generates a standards-compliant test suite, validates everything, and delivers the result as a draft PR. Runs locally via Claude Code.
 
 No manual test writing. No guessing what to cover. One command, full pipeline.
 
@@ -415,4 +415,4 @@ All artifacts are written to the `.qa-output/` directory during a pipeline run:
 
 ---
 
-Built for Capmation QA engineers. Powered by Claude Code.
+Powered by Claude Code.

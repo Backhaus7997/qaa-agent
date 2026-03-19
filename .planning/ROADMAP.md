@@ -1,8 +1,8 @@
-# Roadmap: Capmation QA Automation Agent
+# Roadmap: QA Automation Agent
 
 ## Overview
 
-This roadmap delivers a multi-agent QA automation system that any Capmation QA engineer can run locally via Claude Code against a client repo to produce a complete, standards-compliant test suite as a reviewable PR. The build progresses from foundational CLI tooling, through templates and agent implementations, to workflow orchestration and user-facing delivery -- each phase delivering a verifiable capability that enables the next.
+This roadmap delivers a multi-agent QA automation system that any QA engineer can run locally via Claude Code against a client repo to produce a complete, standards-compliant test suite as a reviewable PR. The build progresses from foundational CLI tooling, through templates and agent implementations, to workflow orchestration and user-facing delivery -- each phase delivering a verifiable capability that enables the next.
 
 ## Phases
 

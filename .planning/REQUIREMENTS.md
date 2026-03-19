@@ -1,4 +1,4 @@
-# Requirements: Capmation QA Automation Agent
+# Requirements: QA Automation Agent
 
 **Defined:** 2026-03-18
 **Core Value:** Any QA engineer can point the agent at a client repo and get a complete, standards-compliant test suite as a reviewable PR.

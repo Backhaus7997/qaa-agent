@@ -1,0 +1,102 @@
+#!/bin/bash
+# QAA CLI - sets up a project directory to use the QA Automation Agent
+# Usage: qaa init [--force]
+
+set -e
+
+QAA_HOME="$HOME/.claude/qaa"
+
+if [ ! -d "$QAA_HOME" ]; then
+  echo "Error: QAA not installed. Run install.sh first."
+  exit 1
+fi
+
+COMMAND="${1:-help}"
+
+case "$COMMAND" in
+  init)
+    FORCE="${2:-}"
+    PROJECT_DIR="$(pwd)"
+
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo " QAA ► INITIALIZING PROJECT"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "Project: $PROJECT_DIR"
+    echo ""
+
+    # Check if already initialized
+    if [ -f "$PROJECT_DIR/CLAUDE.md" ] && [ "$FORCE" != "--force" ]; then
+      echo "Project already has CLAUDE.md. Use 'qaa init --force' to overwrite."
+      exit 1
+    fi
+
+    # Copy CLAUDE.md (QA standards)
+    echo "◆ Copying CLAUDE.md (QA standards)..."
+    cp "$QAA_HOME/CLAUDE.md" "$PROJECT_DIR/CLAUDE.md"
+
+    # Copy .claude directory — replace {{QAA_HOME}} placeholder with real path
+    echo "◆ Setting up .claude/commands/ (13 slash commands)..."
+    mkdir -p "$PROJECT_DIR/.claude/commands"
+    for cmd in "$QAA_HOME/commands/"*.md; do
+      sed "s|{{QAA_HOME}}|$QAA_HOME|g" "$cmd" > "$PROJECT_DIR/.claude/commands/$(basename "$cmd")"
+    done
+
+    echo "◆ Setting up .claude/skills/ (6 QA skills)..."
+    mkdir -p "$PROJECT_DIR/.claude/skills"
+    cp -r "$QAA_HOME/skills/"* "$PROJECT_DIR/.claude/skills/"
+
+    echo "◆ Copying .claude/settings.json (permissions)..."
+    # Merge with existing settings if present, otherwise copy
+    if [ ! -f "$PROJECT_DIR/.claude/settings.json" ]; then
+      cp "$QAA_HOME/settings.json" "$PROJECT_DIR/.claude/settings.json"
+    else
+      echo "  (settings.json already exists — skipping to preserve your config)"
+    fi
+
+    # Create .qaa-config with path to global install
+    echo "◆ Creating .qaa-config (points to global QAA install)..."
+    cat > "$PROJECT_DIR/.qaa-config" << EOF
+# QAA Configuration
+# This file tells the QA agent where to find its tools
+QAA_HOME=$QAA_HOME
+QAA_VERSION=1.0.0
+EOF
+
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo " QAA ► PROJECT READY ✓"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "Files created:"
+    echo "  CLAUDE.md              — QA standards (read by Claude Code automatically)"
+    echo "  .claude/commands/      — 13 slash commands (/qa-start, /qa-analyze, etc.)"
+    echo "  .claude/skills/        — 6 QA skills"
+    echo "  .claude/settings.json  — Permissions (auto-approve most operations)"
+    echo "  .qaa-config            — Points to global QAA install"
+    echo ""
+    echo "Now open Claude Code in this directory and run:"
+    echo "  /qa-start"
+    echo ""
+    ;;
+
+  help|--help|-h)
+    echo "QAA - QA Automation Agent"
+    echo ""
+    echo "Usage:"
+    echo "  qaa init [--force]    Initialize current directory for QAA"
+    echo "  qaa help              Show this help"
+    echo ""
+    echo "After 'qaa init', open Claude Code and use:"
+    echo "  /qa-start             Full QA pipeline (scan → analyze → generate → PR)"
+    echo "  /qa-analyze           Analysis only (no test generation)"
+    echo "  /qa-validate          Validate existing tests"
+    echo ""
+    ;;
+
+  *)
+    echo "Unknown command: $COMMAND"
+    echo "Run 'qaa help' for usage."
+    exit 1
+    ;;
+esac

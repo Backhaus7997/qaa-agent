@@ -1,8 +1,8 @@
-# Capmation QA Automation Agent
+# QA Automation Agent
 
 ## What This Is
 
-A multi-agent QA automation system for Capmation's ~15-person QA team, built by cloning GSD's proven architecture (CLI tooling, markdown workflows, parallel agent spawning, state tracking) and specializing it for QA tasks: repository analysis, test generation, test ID injection, validation, and PR delivery. Each QA engineer runs it locally via Claude Code against any client repo.
+A multi-agent QA automation system built by cloning GSD's proven architecture (CLI tooling, markdown workflows, parallel agent spawning, state tracking) and specializing it for QA tasks: repository analysis, test generation, test ID injection, validation, and PR delivery. Each QA engineer runs it locally via Claude Code against any client repo.
 
 ## Core Value
 
@@ -43,9 +43,8 @@ Any QA engineer can point the agent at a client repo and get a complete, standar
 
 ## Context
 
-- **Company**: Capmation (CodeAssurance) — QA Automation services
-- **Team**: ~15 QA engineers, co-managed by Martin and business partner
-- **Goal**: "Utilizar AI con el fin de que encontremos y podamos definir un proceso que podamos Iterar, Repetir, y Estandarizar como approach para el QA en Capmation"
+- **Team**: QA engineers
+- **Goal**: AI-powered QA process that can be iterated, repeated, and standardized
 - **Architecture model**: Cloned from GSD (get-shit-done) v1.25.1 — proven multi-agent orchestration with ~22,000 LOC across CLI tooling, workflows, templates, and references
 - **Agent Teams**: Claude Code experimental feature enabled (CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1, requires Opus 4.6)
 - **Existing work**: 6 SKILL.md files, 11 slash commands, 3 spec files, CLAUDE.md with QA standards — all created but need integration into the cloned architecture
