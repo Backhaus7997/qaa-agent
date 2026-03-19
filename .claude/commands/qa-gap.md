@@ -1,69 +1,54 @@
 # QA Gap Analysis
 
-Compare a DEV repo against its QA repo and identify coverage gaps. Produces a detailed gap report showing what's missing, what's broken, and what needs updating.
+Compare a developer repository against its QA repository to identify coverage gaps. Requires both repo paths. Produces a detailed gap report showing missing tests, broken tests, and quality assessment.
+
+## Usage
+
+/qa-gap --dev-repo <path> --qa-repo <path>
+
+- --dev-repo: path to the developer repository (required)
+- --qa-repo: path to the existing QA repository (required)
+
+## What It Produces
+
+- SCAN_MANIFEST.md -- scan of both repositories
+- GAP_ANALYSIS.md -- coverage map, missing tests with IDs, broken tests, quality assessment
 
 ## Instructions
 
-### Step 1: Gather Input
+1. Read `CLAUDE.md` -- testing pyramid, test spec rules, quality gates.
+2. Invoke scanner agent to scan both repositories:
 
-Ask the user for:
-1. Path to the DEV repo
-2. Path to the QA repo
-3. Any recent changes or features to focus on?
+Task(
+  prompt="
+    <objective>Scan both developer and QA repositories and produce SCAN_MANIFEST.md</objective>
+    <execution_context>@agents/qaa-scanner.md</execution_context>
+    <files_to_read>
+    - CLAUDE.md
+    </files_to_read>
+    <parameters>
+    user_input: $ARGUMENTS
+    </parameters>
+  "
+)
 
-### Step 2: Scan Both Repos
+3. Invoke analyzer agent in gap mode:
 
-**DEV repo**: Map all testable surfaces:
-- API endpoints (routes, controllers)
-- Business logic (services, utils)
-- Data models and validation rules
-- Frontend pages and components
-- Authentication/authorization flows
-- Error handling paths
+Task(
+  prompt="
+    <objective>Produce GAP_ANALYSIS.md comparing dev repo against QA repo</objective>
+    <execution_context>@agents/qaa-analyzer.md</execution_context>
+    <files_to_read>
+    - CLAUDE.md
+    - .qa-output/SCAN_MANIFEST.md
+    </files_to_read>
+    <parameters>
+    user_input: $ARGUMENTS
+    mode: gap
+    </parameters>
+  "
+)
 
-**QA repo**: Map existing test coverage:
-- What's tested (file → feature mapping)
-- Test quality (assertion specificity, locator tiers)
-- Framework and tooling status
-- Broken or skipped tests
-
-### Step 3: Cross-Reference
-
-For each testable surface in DEV, check if QA has:
-- At least one happy-path test
-- At least one negative/error test
-- Edge case coverage where applicable
-
-### Step 4: Produce GAP_ANALYSIS.md
-
-```markdown
-# Gap Analysis Report
-
-## Summary
-- Testable surfaces in DEV: [N]
-- Covered by QA tests: [N] (X%)
-- Missing coverage: [N] (Y%)
-- Broken/skipped tests: [N]
-
-## Coverage Map
-| Feature | Endpoints/Functions | Unit Tests | API Tests | E2E Tests | Gap |
-|---------|--------------------:|:----------:|:---------:|:---------:|:---:|
-| Auth    | 5                  | 2          | 1         | 0         | HIGH |
-| ...     | ...                | ...        | ...       | ...       | ... |
-
-## Missing Test Cases (prioritized)
-### P0 — Must Add
-...
-### P1 — Should Add
-...
-### P2 — Nice to Have
-...
-
-## Broken Tests
-...
-
-## Recommendations
-...
-```
+4. Present results. No test generation. No git operations.
 
 $ARGUMENTS

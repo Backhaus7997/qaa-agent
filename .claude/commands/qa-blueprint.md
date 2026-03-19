@@ -1,77 +1,54 @@
 # QA Repository Blueprint
 
-Generate a complete QA repo structure blueprint for a project that has no QA repo yet. Includes folder structure, recommended stack, config files, and execution scripts.
+Generate a complete QA repository structure blueprint for a project that has no existing QA repo. Includes recommended stack, folder structure, config files, CI/CD pipeline, and definition of done.
+
+## Usage
+
+/qa-blueprint [--dev-repo <path>]
+
+- No arguments: analyzes current directory
+- --dev-repo: explicit path to developer repository
+
+## What It Produces
+
+- SCAN_MANIFEST.md -- dev repo scan with framework detection
+- QA_REPO_BLUEPRINT.md -- folder structure, recommended stack, config files, CI/CD strategy
 
 ## Instructions
 
-### Step 1: Gather Input
+1. Read `CLAUDE.md` -- repo structure, naming conventions, testing pyramid.
+2. Invoke scanner agent:
 
-Ask the user for:
-1. Path to the DEV repo
-2. Preferred test framework (or auto-detect from DEV repo's tech stack)
-3. CI/CD platform (GitHub Actions, Azure Pipelines, GitLab CI, etc.)
+Task(
+  prompt="
+    <objective>Scan developer repository and produce SCAN_MANIFEST.md</objective>
+    <execution_context>@agents/qaa-scanner.md</execution_context>
+    <files_to_read>
+    - CLAUDE.md
+    </files_to_read>
+    <parameters>
+    user_input: $ARGUMENTS
+    </parameters>
+  "
+)
 
-### Step 2: Analyze DEV Repo
+3. Invoke analyzer agent in full mode (blueprint):
 
-Determine:
-- Tech stack (language, runtime, framework)
-- Frontend vs backend vs full-stack
-- API style (REST, GraphQL, gRPC)
-- Authentication method
-- Database type
-- External integrations
+Task(
+  prompt="
+    <objective>Produce QA_REPO_BLUEPRINT.md with complete repository structure</objective>
+    <execution_context>@agents/qaa-analyzer.md</execution_context>
+    <files_to_read>
+    - CLAUDE.md
+    - .qa-output/SCAN_MANIFEST.md
+    </files_to_read>
+    <parameters>
+    user_input: $ARGUMENTS
+    mode: full
+    </parameters>
+  "
+)
 
-### Step 3: Generate QA_REPO_BLUEPRINT.md
-
-```markdown
-# QA Repository Blueprint: [Project Name]
-
-## Recommended Stack
-- Test runner: [Playwright/Cypress/Jest/pytest/xUnit...]
-- API testing: [supertest/requests/RestSharp...]
-- Assertions: [expect/assert/should...]
-- Mocking: [MSW/responses/Moq...]
-- Reporting: [Allure/HTML Reporter...]
-
-## Folder Structure
-```
-qa-[project-name]/
-├── tests/
-│   ├── e2e/
-│   │   ├── smoke/           # P0 tests — every PR
-│   │   └── regression/      # Full suite — nightly
-│   ├── api/                 # API-level tests
-│   ├── unit/                # Unit tests
-│   └── contract/            # Contract tests (if microservices)
-├── pages/                   # Page Object Models
-│   ├── base/
-│   │   └── BasePage.[ext]
-│   └── [feature]/
-│       └── [Feature]Page.[ext]
-├── fixtures/                # Test data
-├── config/                  # Test configs
-├── reports/                 # Generated (gitignored)
-├── [config files]           # playwright.config.ts, etc.
-├── .env.example             # Required env vars
-└── README.md                # How to run tests
-```
-
-## Config Files (generated)
-...
-
-## CI/CD Pipeline
-...
-
-## Definition of Done
-- [ ] All test files follow naming convention
-- [ ] POM structure established
-- [ ] Fixtures use env vars, no hardcoded credentials
-- [ ] CI pipeline runs smoke tests on PR
-- [ ] README explains setup and execution
-```
-
-### Step 4: Scaffold (Optional)
-
-Ask the user if they want to create the actual folder structure and config files on disk.
+4. Present blueprint to user. No git operations.
 
 $ARGUMENTS

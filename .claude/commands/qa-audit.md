@@ -1,67 +1,37 @@
 # Full QA Audit
 
-Comprehensive quality audit of a test suite against CLAUDE.md standards. Produces a detailed report with scores and actionable recommendations.
+Comprehensive quality audit of a test suite against CLAUDE.md standards. Scores across 6 dimensions: Locator Quality (20%), Assertion Specificity (20%), POM Compliance (15%), Test Coverage (20%), Naming Convention (15%), Test Data Management (10%).
+
+## Usage
+
+/qa-audit <path-to-tests> [--dev-repo <path>]
+
+- path-to-tests: directory containing test files to audit
+- --dev-repo: path to developer repository (for coverage cross-reference)
+
+## What It Produces
+
+- QA_AUDIT_REPORT.md -- 6-dimension scoring, critical issues list, prioritized recommendations with effort estimates
 
 ## Instructions
 
-### Step 1: Gather Input
+1. Read `CLAUDE.md` -- quality gates, locator tiers, assertion rules, POM rules, naming conventions.
+2. Invoke validator agent in audit mode:
 
-Ask the user for:
-1. Path to the QA/test repository or test directory
-2. Path to the DEV repository (for cross-reference)
+Task(
+  prompt="
+    <objective>Audit test suite quality and produce QA_AUDIT_REPORT.md with 6-dimension scoring</objective>
+    <execution_context>@agents/qaa-validator.md</execution_context>
+    <files_to_read>
+    - CLAUDE.md
+    </files_to_read>
+    <parameters>
+    user_input: $ARGUMENTS
+    mode: audit
+    </parameters>
+  "
+)
 
-### Step 2: Structure Audit
-
-Evaluate the test suite structure:
-- Directory organization (follows testing pyramid?)
-- File naming conventions
-- POM structure (base class, feature pages, components)
-- Fixture/test data management
-- Configuration files
-- CI/CD integration
-
-### Step 3: Quality Audit
-
-For each test file, evaluate:
-- **Locator Quality**: Score each selector by CLAUDE.md tier (1-4)
-- **Assertion Quality**: Concrete values vs vague (toBeTruthy, toBeDefined)
-- **Test Independence**: Each test can run standalone?
-- **Data Management**: Hardcoded values vs fixtures/env vars
-- **Error Handling**: Negative tests exist? Edge cases covered?
-- **ID Convention**: All tests have unique IDs?
-
-### Step 4: Coverage Audit
-
-Cross-reference with DEV repo:
-- Which business logic has unit tests?
-- Which API endpoints have test coverage?
-- Which user flows have E2E coverage?
-- Map actual vs recommended testing pyramid
-
-### Step 5: Produce QA_AUDIT_REPORT.md
-
-```markdown
-# QA Audit Report
-
-## Scores
-| Dimension | Score | Details |
-|-----------|-------|---------|
-| Structure | X/10 | ... |
-| Locators  | X/10 | ... |
-| Assertions| X/10 | ... |
-| Coverage  | X/10 | ... |
-| Data Mgmt | X/10 | ... |
-| CI/CD     | X/10 | ... |
-| **Overall** | **X/10** | ... |
-
-## Critical Issues (fix immediately)
-...
-
-## Recommendations (prioritized)
-...
-
-## Coverage Map
-...
-```
+3. Present results with overall score and prioritized recommendations.
 
 $ARGUMENTS

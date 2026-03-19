@@ -1,54 +1,36 @@
 # Fix Broken Tests
 
-Diagnose and fix broken test files. Classifies each failure, then auto-fixes TEST CODE ERRORS while flagging APPLICATION BUGS.
+Diagnose and fix broken test files. Classifies each failure as APPLICATION BUG, TEST CODE ERROR, ENVIRONMENT ISSUE, or INCONCLUSIVE. Auto-fixes only TEST CODE ERRORS. Never touches application code -- only reports APP BUGs for developer attention.
+
+## Usage
+
+/qa-fix <path-to-tests> [error output]
+
+- path-to-tests: directory or specific test files with failures
+- error output: paste test runner output (optional -- agent will run tests if not provided)
+
+## What It Produces
+
+- FAILURE_CLASSIFICATION_REPORT.md -- per-failure classification with evidence, confidence, and auto-fix log
 
 ## Instructions
 
-### Step 1: Gather Input
+1. Read `CLAUDE.md` -- classification rules, locator tiers, assertion quality.
+2. Invoke bug-detective agent:
 
-Ask the user for:
-1. Path to the test file(s) or folder with broken tests
-2. Error output (if they have it) or should the agent run the tests?
+Task(
+  prompt="
+    <objective>Run tests, classify failures, and auto-fix TEST CODE ERRORS</objective>
+    <execution_context>@agents/qaa-bug-detective.md</execution_context>
+    <files_to_read>
+    - CLAUDE.md
+    </files_to_read>
+    <parameters>
+    user_input: $ARGUMENTS
+    </parameters>
+  "
+)
 
-### Step 2: Run Tests
-
-Execute the test suite and capture output:
-- Identify which tests pass and which fail
-- Capture error messages, stack traces, screenshots
-
-### Step 3: Classify Failures
-
-For each failing test, determine:
-
-| Classification | Criteria | Action |
-|---------------|----------|--------|
-| **TEST CODE ERROR** | Syntax/import error in test file | Auto-fix |
-| **APPLICATION BUG** | Error in production code path | Report only |
-| **ENVIRONMENT ISSUE** | Connection refused, timeout, missing env | Report + suggest fix |
-| **INCONCLUSIVE** | Can't determine root cause | Report + request more info |
-
-Evidence requirements: file path, line number, error message, specific code proving the classification.
-
-### Step 4: Auto-Fix TEST CODE ERRORS
-
-Only fix with HIGH confidence:
-- Import path corrections
-- Selector updates (match current DOM)
-- Assertion value updates (match current behavior)
-- Config fixes (baseURL, timeout, etc.)
-- Missing await keywords
-
-**NEVER auto-fix APPLICATION BUGS** — only report them.
-
-### Step 5: Re-run and Report
-
-After fixes:
-1. Re-run the fixed tests
-2. Produce FAILURE_CLASSIFICATION_REPORT.md with:
-   - Summary table (pass/fail/classification)
-   - Detailed analysis per failure
-   - What was fixed
-   - What needs human attention
-   - Confidence level for each classification
+3. Present results. APPLICATION BUGs are reported for developer action, not auto-fixed.
 
 $ARGUMENTS
