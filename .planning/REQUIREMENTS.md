@@ -61,7 +61,7 @@
 - [x] **UX-02**: /qa-analyze slash command runs analysis-only (no test generation, no PR)
 - [x] **UX-03**: /qa-validate slash command validates existing test files and classifies failures
 - [x] **UX-04**: Additional slash commands for focused tasks (/qa-testid, /qa-fix, /qa-pom, /qa-audit, /qa-gap, /qa-blueprint, /qa-report, /qa-pyramid)
-- [ ] **UX-05**: README.md explains installation, configuration, and usage for any QA engineer
+- [x] **UX-05**: README.md explains installation, configuration, and usage for any QA engineer
 
 ## v2 Requirements
 
@@ -136,7 +136,7 @@
 | UX-02 | Phase 6 | Complete |
 | UX-03 | Phase 6 | Complete |
 | UX-04 | Phase 6 | Complete |
-| UX-05 | Phase 6 | Pending |
+| UX-05 | Phase 6 | Complete |
 
 **Coverage:**
 - v1 requirements: 40 total
