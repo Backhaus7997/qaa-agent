@@ -22,7 +22,7 @@
 - [ ] **AGENT-03**: qa-planner agent creates test generation plans with task breakdown, dependencies, and file assignments
 - [ ] **AGENT-04**: qa-executor agent writes actual test files (POM, specs, fixtures, config) following CLAUDE.md standards
 - [ ] **AGENT-05**: qa-validator agent runs 4-layer validation (syntax, structure, dependencies, logic) with max 3 fix loops
-- [ ] **AGENT-06**: qa-testid-injector agent scans frontend code, audits missing data-testid, injects following naming convention
+- [x] **AGENT-06**: qa-testid-injector agent scans frontend code, audits missing data-testid, injects following naming convention
 - [ ] **AGENT-07**: qa-bug-detective agent classifies test failures as APP BUG / TEST ERROR / ENV ISSUE / INCONCLUSIVE with evidence
 
 ### Workflows
@@ -119,7 +119,7 @@
 | AGENT-03 | Phase 4 | Pending |
 | AGENT-04 | Phase 4 | Pending |
 | AGENT-05 | Phase 4 | Pending |
-| AGENT-06 | Phase 4 | Pending |
+| AGENT-06 | Phase 4 | Complete |
 | AGENT-07 | Phase 4 | Pending |
 | FLOW-01 | Phase 5 | Pending |
 | FLOW-02 | Phase 5 | Pending |
