@@ -82,12 +82,12 @@ Plans:
   3. Validator agent runs 4-layer validation (syntax, structure, dependencies, logic) on generated test files and performs up to 3 fix loops to resolve issues, producing a VALIDATION_REPORT.md with pass/fail per file per layer
   4. Test-ID injector agent scans frontend source code, audits missing data-testid attributes, injects them following naming conventions, and produces TESTID_AUDIT_REPORT.md with coverage score
   5. Bug detective agent classifies test failures as APP BUG, TEST ERROR, ENV ISSUE, or INCONCLUSIVE with supporting evidence and confidence levels in FAILURE_CLASSIFICATION_REPORT.md
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
-- [ ] 04-03: TBD
+- [ ] 04-01-PLAN.md — Planner and executor agent workflows: generation plan creation and test file writing
+- [ ] 04-02-PLAN.md — Validator and bug detective agent workflows: 4-layer validation and failure classification
+- [ ] 04-03-PLAN.md — Test-ID injector agent workflow: audit, injection, and validation on separate branch
 
 ### Phase 5: Workflow Orchestration
 **Goal**: QA engineer selects a workflow option matching their repo situation and the system executes the correct agent pipeline automatically, with parallel execution and human checkpoints where needed
@@ -133,6 +133,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 1. Core Infrastructure | 5/5 | Complete | 2026-03-18 |
 | 2. QA Standards and Templates | 4/4 | Complete | 2026-03-18 |
 | 3. Discovery Agents | 1/2 | In Progress | - |
-| 4. Generation Agents | 0/0 | Not started | - |
+| 4. Generation Agents | 0/3 | Not started | - |
 | 5. Workflow Orchestration | 0/0 | Not started | - |
 | 6. Delivery and User Experience | 0/0 | Not started | - |
