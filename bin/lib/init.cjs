@@ -619,6 +619,212 @@ function cmdInitMapCodebase(cwd, raw) {
   output(result, raw);
 }
 
+function cmdInitQaStart(cwd, raw) {
+  const config = loadConfig(cwd);
+
+  // Parse --dev-repo and --qa-repo from process.argv
+  const argv = process.argv;
+  let devRepoPath = cwd;
+  let qaRepoPath = null;
+
+  const devRepoIdx = argv.indexOf('--dev-repo');
+  if (devRepoIdx !== -1 && argv[devRepoIdx + 1]) {
+    devRepoPath = path.resolve(argv[devRepoIdx + 1]);
+  }
+  const qaRepoIdx = argv.indexOf('--qa-repo');
+  if (qaRepoIdx !== -1 && argv[qaRepoIdx + 1]) {
+    qaRepoPath = path.resolve(argv[qaRepoIdx + 1]);
+  }
+
+  // --- Recursive file finder (max 3 levels deep) ---
+  function findFilesRecursive(dir, pattern, maxDepth) {
+    if (maxDepth === undefined) maxDepth = 3;
+    const results = [];
+    try {
+      const entries = fs.readdirSync(dir, { withFileTypes: true });
+      for (const entry of entries) {
+        const fullPath = path.join(dir, entry.name);
+        if (entry.isFile() && pattern.test(entry.name)) {
+          results.push(fullPath);
+        } else if (entry.isDirectory() && maxDepth > 0 && entry.name !== 'node_modules' && entry.name !== '.git') {
+          const sub = findFilesRecursive(fullPath, pattern, maxDepth - 1);
+          for (const s of sub) results.push(s);
+        }
+      }
+    } catch {}
+    return results;
+  }
+
+  // --- Maturity scoring (when qaRepoPath is provided) ---
+  let maturityScore = null;
+  let maturityNote = null;
+
+  if (qaRepoPath) {
+    let score = 0;
+
+    try {
+      // 1. POM usage (25 pts)
+      const hasPagesDir = fs.existsSync(path.join(qaRepoPath, 'pages')) ||
+                          fs.existsSync(path.join(qaRepoPath, 'page-objects'));
+      if (hasPagesDir) {
+        const basePageFiles = findFilesRecursive(qaRepoPath, /^BasePage\./);
+        if (basePageFiles.length > 0) {
+          score += 25;
+        } else {
+          score += 12;
+        }
+      }
+
+      // 2. Assertion quality (25 pts)
+      const testFilePattern = /\.(spec|test)\.(ts|js)$/;
+      const allTestFiles = findFilesRecursive(qaRepoPath, testFilePattern);
+      const sampledTestFiles = allTestFiles.slice(0, 10);
+      let concrete = 0;
+      let vague = 0;
+      const concretePattern = /toBe\(|toEqual\(|toHaveText\(|toContain\(|should\('have\.|should\('eq'|should\('equal'/;
+      const vaguePattern = /toBeTruthy|toBeDefined|toBeFalsy|should\('exist'\)|should\('be\.visible'\)/;
+      for (const tf of sampledTestFiles) {
+        try {
+          const content = fs.readFileSync(tf, 'utf-8');
+          const lines = content.split('\n');
+          for (const line of lines) {
+            if (concretePattern.test(line)) concrete++;
+            if (vaguePattern.test(line)) vague++;
+          }
+        } catch {}
+      }
+      score += Math.round((concrete / Math.max(concrete + vague, 1)) * 25);
+
+      // 3. CI/CD integration (20 pts)
+      const ciPaths = [
+        path.join(qaRepoPath, '.github', 'workflows'),
+        path.join(qaRepoPath, 'Jenkinsfile'),
+        path.join(qaRepoPath, '.gitlab-ci.yml'),
+        path.join(qaRepoPath, 'azure-pipelines.yml'),
+      ];
+      let ciConfigFound = null;
+      for (const ciPath of ciPaths) {
+        if (fs.existsSync(ciPath)) {
+          ciConfigFound = ciPath;
+          break;
+        }
+      }
+      if (ciConfigFound) {
+        let hasTestCommand = false;
+        try {
+          let ciContent = '';
+          const stat = fs.statSync(ciConfigFound);
+          if (stat.isDirectory()) {
+            // .github/workflows/ -- read first file in directory
+            const files = fs.readdirSync(ciConfigFound);
+            if (files.length > 0) {
+              ciContent = fs.readFileSync(path.join(ciConfigFound, files[0]), 'utf-8').substring(0, 500);
+            }
+          } else {
+            ciContent = fs.readFileSync(ciConfigFound, 'utf-8').substring(0, 500);
+          }
+          if (/test|jest|playwright|cypress/i.test(ciContent)) {
+            hasTestCommand = true;
+          }
+        } catch {}
+        score += hasTestCommand ? 20 : 10;
+      }
+
+      // 4. Fixture management (15 pts)
+      const fixturesDir = path.join(qaRepoPath, 'fixtures');
+      if (fs.existsSync(fixturesDir)) {
+        try {
+          const fixtureFiles = fs.readdirSync(fixturesDir).filter(f => !f.startsWith('.'));
+          score += fixtureFiles.length >= 2 ? 15 : 7;
+        } catch {
+          score += 7;
+        }
+      }
+
+      // 5. Naming convention (15 pts)
+      const namingPattern = /\.(e2e\.spec|api\.spec|unit\.spec|e2e\.cy)\./;
+      const totalTestFiles = sampledTestFiles.length;
+      let matchCount = 0;
+      for (const tf of sampledTestFiles) {
+        if (namingPattern.test(path.basename(tf))) {
+          matchCount++;
+        }
+      }
+      score += Math.round((matchCount / Math.max(totalTestFiles, 1)) * 15);
+
+      maturityScore = Math.min(100, score);
+    } catch {
+      maturityScore = 0;
+    }
+
+    // Handle score=0 fallback
+    if (maturityScore === 0) {
+      maturityNote = 'QA repo at ' + qaRepoPath + ' is empty (score 0). Running Option 1 (full pipeline from scratch).';
+    }
+  }
+
+  // --- Determine workflow option ---
+  let option = 1;
+  if (qaRepoPath === null) {
+    option = 1;
+  } else if (maturityScore === 0) {
+    option = 1;
+  } else if (maturityScore < 70) {
+    option = 2;
+  } else {
+    option = 3;
+  }
+
+  // --- Build result object ---
+  const result = {
+    // Models for each agent
+    scanner_model: resolveModelInternal(cwd, 'qaa-scanner'),
+    analyzer_model: resolveModelInternal(cwd, 'qaa-analyzer'),
+    planner_model: resolveModelInternal(cwd, 'qaa-planner'),
+    executor_model: resolveModelInternal(cwd, 'qaa-executor'),
+    validator_model: resolveModelInternal(cwd, 'qaa-validator'),
+    detective_model: resolveModelInternal(cwd, 'qaa-validator'),
+    injector_model: resolveModelInternal(cwd, 'qaa-scanner'),
+
+    // Workflow routing
+    option,
+    maturity_score: maturityScore,
+    maturity_note: maturityNote,
+
+    // Repo paths
+    dev_repo_path: devRepoPath,
+    qa_repo_path: qaRepoPath,
+
+    // Config flags
+    auto_advance: config.workflow?.auto_advance || false,
+    auto_chain_active: config.workflow?._auto_chain_active || false,
+    commit_docs: config.commit_docs,
+    parallelization: config.parallelization,
+
+    // Pipeline state
+    pipeline: {
+      scan_status: 'pending',
+      analyze_status: 'pending',
+      generate_status: 'pending',
+      validate_status: 'pending',
+      deliver_status: 'pending',
+    },
+
+    // File existence
+    state_exists: pathExistsInternal(cwd, '.planning/STATE.md'),
+    config_exists: pathExistsInternal(cwd, '.planning/config.json'),
+
+    // Output paths
+    output_dir: '.qa-output',
+
+    // Timestamps
+    date: new Date().toISOString().split('T')[0],
+    timestamp: new Date().toISOString(),
+  };
+
+  output(result, raw);
+}
+
 function cmdInitProgress(cwd, raw) {
   const config = loadConfig(cwd);
   const milestone = getMilestoneInfo(cwd);
@@ -779,4 +985,5 @@ module.exports = {
   cmdInitMilestoneOp,
   cmdInitMapCodebase,
   cmdInitProgress,
+  cmdInitQaStart,
 };
