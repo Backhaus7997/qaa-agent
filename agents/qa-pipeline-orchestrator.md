@@ -141,7 +141,7 @@ scan(both) -> analyze(gap) -> [testid-inject if frontend] -> plan(gap) -> genera
 - TestID injection: conditional on `has_frontend` from scanner return
 - Validation: always runs on generated files
 - Bug detective: conditional on test failures
-- Deliver: always runs (stubbed for Phase 6)
+- Deliver: always runs (branch creation, per-stage commits, push, draft PR via gh CLI)
 </step>
 
 <step name="execute_scan">
@@ -686,53 +686,242 @@ node bin/qaa-tools.cjs state patch --"Deliver Status" running --"Status" "Prepar
 +------------------------------------------+
 ```
 
-**NOTE: Phase 5 defines the deliver stage fully but stubs the actual PR creation for Phase 6.**
+### Sub-step 1: Pre-flight checks
 
-The deliver stage defines:
+Before attempting branch creation or PR, verify that the required tools are available and authenticated.
 
-1. **Branch naming:** `qa/auto-{project}-{date}` (from init `date` field)
-   - Example: `qa/auto-shopflow-2026-03-19`
-   - Project name derived from package.json `name` field or directory name
+**Check for git remote:**
+```bash
+REMOTE_URL=$(git remote get-url origin 2>/dev/null || echo "")
+```
 
-2. **Commit strategy:** One atomic commit per agent stage's artifacts:
-   - `qa(scanner): produce SCAN_MANIFEST.md for {project_name}`
-   - `qa(analyzer): produce QA_ANALYSIS.md and TEST_INVENTORY.md`
-   - `qa(executor): generate {N} test files with POMs and fixtures`
-   - `qa(validator): validate generated tests - {status} with {confidence} confidence`
-   - `qa(testid-injector): inject {N} data-testid attributes across {M} components`
-   - `qa(bug-detective): classify {N} failures - {breakdown}`
+If `REMOTE_URL` is empty:
+- Print error: `"No git remote found. Artifacts committed locally but PR creation skipped."`
+- Set `LOCAL_ONLY=true`
+- Skip Sub-steps 6, 7, 8, 9 (push and PR creation). Still execute Sub-steps 2-5 (branch creation and commits) so artifacts are organized on a local branch.
 
-3. **PR creation:** `gh pr create` with summary template including:
-   - Analysis summary (architecture type, framework, risk areas)
-   - Test counts by pyramid level (unit: N, integration: N, API: N, E2E: N)
-   - Coverage metrics (modules covered, estimated line coverage)
-   - Validation pass/fail status with confidence level
-   - Link to VALIDATION_REPORT.md in the PR files
+**Check for gh CLI authentication:**
+```bash
+gh auth status 2>/dev/null
+```
 
-4. **STUB for Phase 6:** Print the following message:
-   ```
-   Deliver stage defined. Actual branch/PR creation will be implemented in Phase 6 (DLVR-01 through DLVR-04).
-   ```
+If `gh auth status` fails (non-zero exit code):
+- Print error: `"gh CLI not authenticated. Run 'gh auth login' first. Artifacts committed locally."`
+- Set `LOCAL_ONLY=true`
+- Same skip behavior as above.
 
-5. **For now:** Commit all artifacts to the current branch:
-   ```bash
-   node bin/qaa-tools.cjs commit "qa(pipeline): complete QA automation pipeline" --files {all artifact paths}
-   ```
+If both checks pass, set `LOCAL_ONLY=false`.
 
-   Where `{all artifact paths}` includes:
-   - `{output_dir}/SCAN_MANIFEST.md`
-   - `{output_dir}/QA_ANALYSIS.md` (Option 1) or `{output_dir}/GAP_ANALYSIS.md` (Options 2/3)
-   - `{output_dir}/TEST_INVENTORY.md` (Option 1)
-   - `{output_dir}/QA_REPO_BLUEPRINT.md` (Option 1, if produced)
-   - `{output_dir}/GENERATION_PLAN.md`
-   - `{output_dir}/VALIDATION_REPORT.md`
-   - `{output_dir}/TESTID_AUDIT_REPORT.md` (if testid injection ran)
-   - `{output_dir}/FAILURE_CLASSIFICATION_REPORT.md` (if bug detective ran)
-   - All generated test files, POMs, fixtures, and configs
+### Sub-step 2: Derive project name
 
-**State update -- mark deliver as complete:**
+Read `dev_repo_path` from init context (available from Step 1).
+
+**Attempt to read from package.json:**
+```bash
+PROJECT_NAME=$(node -e "try { const p = require('${dev_repo_path}/package.json'); console.log(p.name || ''); } catch { console.log(''); }")
+```
+
+**Fallback to directory basename:**
+```bash
+if [ -z "$PROJECT_NAME" ]; then
+  PROJECT_NAME=$(basename "${dev_repo_path}")
+fi
+```
+
+**Sanitize for branch naming (lowercase, alphanumeric and hyphens only):**
+```bash
+PROJECT_NAME=$(echo "$PROJECT_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//')
+```
+
+### Sub-step 3: Detect default branch
+
+```bash
+DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name' 2>/dev/null || echo "main")
+```
+
+If `gh repo view` fails (e.g., no remote or gh not authenticated), fall back to `"main"`.
+
+### Sub-step 4: Create feature branch
+
+**Branch name:** `qa/auto-{PROJECT_NAME}-{date}` where `date` comes from init context.
+
+**Handle collision:** If branch already exists locally or remotely, append a numeric suffix:
+```bash
+BRANCH="qa/auto-${PROJECT_NAME}-${date}"
+
+# Check if branch exists locally or remotely
+if git rev-parse --verify "$BRANCH" 2>/dev/null || git rev-parse --verify "origin/$BRANCH" 2>/dev/null; then
+  SUFFIX=2
+  while git rev-parse --verify "${BRANCH}-${SUFFIX}" 2>/dev/null || git rev-parse --verify "origin/${BRANCH}-${SUFFIX}" 2>/dev/null; do
+    SUFFIX=$((SUFFIX + 1))
+  done
+  BRANCH="${BRANCH}-${SUFFIX}"
+fi
+```
+
+**Create from default branch:**
+```bash
+git checkout -b "$BRANCH" "$DEFAULT_BRANCH"
+```
+
+If branch creation fails, print error and fall through to local-only commit on current branch.
+
+### Sub-step 5: Per-stage atomic commits
+
+For each pipeline stage that produced artifacts, commit using `qaa-tools.cjs commit`. Check file existence before each commit -- skip stages that did not produce artifacts.
+
+**Scanner:**
+```bash
+if [ -f "${output_dir}/SCAN_MANIFEST.md" ]; then
+  node bin/qaa-tools.cjs commit "qa(scanner): produce SCAN_MANIFEST.md for ${PROJECT_NAME}" --files ${output_dir}/SCAN_MANIFEST.md
+fi
+```
+
+**Analyzer (Option 1):**
+```bash
+if [ -f "${output_dir}/QA_ANALYSIS.md" ]; then
+  ANALYZER_FILES="${output_dir}/QA_ANALYSIS.md ${output_dir}/TEST_INVENTORY.md"
+  if [ -f "${output_dir}/QA_REPO_BLUEPRINT.md" ]; then
+    ANALYZER_FILES="${ANALYZER_FILES} ${output_dir}/QA_REPO_BLUEPRINT.md"
+  fi
+  node bin/qaa-tools.cjs commit "qa(analyzer): produce QA_ANALYSIS.md and TEST_INVENTORY.md" --files ${ANALYZER_FILES}
+fi
+```
+
+**Analyzer (Option 2/3):**
+```bash
+if [ -f "${output_dir}/GAP_ANALYSIS.md" ]; then
+  node bin/qaa-tools.cjs commit "qa(analyzer): produce GAP_ANALYSIS.md" --files ${output_dir}/GAP_ANALYSIS.md
+fi
+```
+
+**TestID Injector (if ran):**
+```bash
+if [ -f "${output_dir}/TESTID_AUDIT_REPORT.md" ]; then
+  node bin/qaa-tools.cjs commit "qa(testid-injector): inject ${injected_count} data-testid attributes across ${component_count} components" --files ${output_dir}/TESTID_AUDIT_REPORT.md ${modified_source_files}
+fi
+```
+
+Where `injected_count` and `component_count` are captured from the testid-injector return in Step 5, and `modified_source_files` are the frontend source files that were modified.
+
+**Executor:**
+```bash
+if [ -n "${generated_file_paths}" ]; then
+  node bin/qaa-tools.cjs commit "qa(executor): generate ${total_files} test files with POMs and fixtures" --files ${generated_file_paths}
+fi
+```
+
+Where `total_files` and `generated_file_paths` are captured from the executor return in Step 7.
+
+**Validator:**
+```bash
+if [ -f "${output_dir}/VALIDATION_REPORT.md" ]; then
+  node bin/qaa-tools.cjs commit "qa(validator): validate generated tests - ${overall_status} with ${confidence} confidence" --files ${output_dir}/VALIDATION_REPORT.md
+fi
+```
+
+Where `overall_status` and `confidence` are captured from the validator return in Step 8.
+
+**Bug Detective (if ran):**
+```bash
+if [ -f "${output_dir}/FAILURE_CLASSIFICATION_REPORT.md" ]; then
+  node bin/qaa-tools.cjs commit "qa(bug-detective): classify ${total_failures} failures - ${classification_summary}" --files ${output_dir}/FAILURE_CLASSIFICATION_REPORT.md
+fi
+```
+
+Where `total_failures` and `classification_summary` (e.g., "2 APP BUG, 2 TEST ERROR, 1 ENV ISSUE") are captured from the bug-detective return in Step 9.
+
+### Sub-step 6: Push branch
+
+If `LOCAL_ONLY` is true, skip this sub-step.
+
+```bash
+git push -u origin "$BRANCH"
+```
+
+If push fails:
+- Print error: `"Push failed: {error_message}. Artifacts committed locally on branch ${BRANCH}."`
+- Set `LOCAL_ONLY=true` (skip PR creation but keep local commits).
+- Do NOT set deliver status to failed -- artifacts are committed locally.
+
+### Sub-step 7: Build PR body
+
+If `LOCAL_ONLY` is true, skip this sub-step.
+
+**Read the PR template:**
+```bash
+PR_BODY=$(cat templates/pr-template.md)
+```
+
+**Replace all `{placeholder}` tokens with actual values collected during pipeline execution:**
+
+- `{architecture_type}` -- from QA_ANALYSIS.md architecture overview section (or init context if available). Example: "Next.js full-stack application"
+- `{framework}` -- from QA_ANALYSIS.md or SCAN_MANIFEST.md framework detection. Example: "Playwright"
+- `{risk_summary}` -- from QA_ANALYSIS.md risk assessment counts. Example: "3 HIGH, 5 MEDIUM, 2 LOW"
+- `{unit_count}` -- from `pyramid_breakdown.unit` captured in Step 4 (analyzer return)
+- `{integration_count}` -- from `pyramid_breakdown.integration`
+- `{api_count}` -- from `pyramid_breakdown.api`
+- `{e2e_count}` -- from `pyramid_breakdown.e2e`
+- `{total_count}` -- from `total_test_count` captured in Step 4
+- `{modules_covered}` -- count of modules/files with at least one test case in TEST_INVENTORY.md
+- `{coverage_estimate}` -- estimated coverage percentage from QA_ANALYSIS.md recommended testing pyramid section
+- `{validation_result}` -- from `overall_status` captured in Step 8 (validator return). PASS, PASS_WITH_WARNINGS, or FAIL
+- `{confidence}` -- from `confidence` captured in Step 8. HIGH, MEDIUM, or LOW
+- `{fix_loops_used}` -- from `fix_loops_used` captured in Step 8. Number 0-3
+- `{issues_found}` -- from `issues_found` captured in Step 8
+- `{issues_fixed}` -- from `issues_fixed` captured in Step 8
+- `{file_list}` -- if total generated files <= 50, list each file as `- {path}`. If > 50, use summary: `{N} files across {M} directories`
+
+All replacements use simple string substitution. The PR body must be in English.
+
+### Sub-step 8: Create draft PR
+
+If `LOCAL_ONLY` is true, skip this sub-step.
+
+```bash
+PR_URL=$(gh pr create \
+  --draft \
+  --title "qa: automated test suite for ${PROJECT_NAME}" \
+  --body "${PR_BODY}" \
+  --label "qa-automation" \
+  --label "auto-generated" \
+  --assignee "@me" 2>&1)
+```
+
+**Do NOT pass `--base` flag.** Let gh auto-detect the default branch to avoid errors when the default branch is not named "main".
+
+**On success:** Capture the PR URL from stdout. The URL is the last line of `gh pr create` output.
+
+**On failure:**
+- Print error: `"PR creation failed: ${PR_URL}. Artifacts remain on branch ${BRANCH}."`
+- Set deliver status to failed:
+  ```bash
+  node bin/qaa-tools.cjs state patch --"Deliver Status" failed --"Status" "Deliver failed: PR creation error"
+  ```
+- Do NOT stop the pipeline -- artifacts are committed and pushed. The QA engineer can create the PR manually.
+
+### Sub-step 9: Print PR URL
+
+If PR was created successfully:
+```
+PR created: ${PR_URL}
+```
+
+If `LOCAL_ONLY` is true:
+```
+PR: not created (local-only mode). Artifacts committed on branch: ${BRANCH}
+```
+
+Store `PR_URL` (or the local-only message) for inclusion in the pipeline summary banner.
+
+**State update -- mark deliver as complete (on success):**
 ```bash
 node bin/qaa-tools.cjs state patch --"Deliver Status" complete --"Status" "Pipeline complete"
+```
+
+**Clear auto-chain flag at pipeline completion:**
+```bash
+node bin/qaa-tools.cjs config-set workflow._auto_chain_active false
 ```
 </step>
 
@@ -970,7 +1159,9 @@ After all stages complete (or on pipeline stop), print a summary banner:
     [{check}] Generate     -- {generate_duration} ({files_created} files created)
     [{check}] Validate     -- {validate_duration} ({confidence} confidence)
     [{check}] Bug Detective-- {detective_duration or 'skipped'}
-    [{check}] Deliver      -- {deliver_duration or 'stubbed for Phase 6'}
+    [{check}] Deliver      -- {deliver_duration}
+
+  PR: {pr_url or 'not created (local-only)'}
 
   Artifacts:
     {list all produced .md files in output_dir}
@@ -1011,7 +1202,7 @@ Before this orchestrator is considered complete, verify:
 - [ ] Auto-advance correctly classifies safe vs risky checkpoints
 - [ ] Pipeline stops entirely on any stage failure (no partial PR)
 - [ ] Progress banners print for every stage even in auto mode
-- [ ] Deliver stage is stubbed with clear Phase 6 handoff note
+- [ ] Deliver stage creates branch, commits per-stage, pushes, and creates draft PR via gh CLI
 - [ ] Resume spawns fresh agent with explicit state (no serialization)
 </quality_gate>
 
