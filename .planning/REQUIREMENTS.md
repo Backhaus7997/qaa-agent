@@ -27,13 +27,13 @@
 
 ### Workflows
 
-- [ ] **FLOW-01**: Option 1 workflow (dev-only): scan → analyze → [testid-inject if frontend] → plan → generate → validate → deliver
-- [ ] **FLOW-02**: Option 2 workflow (dev + immature QA): scan both → gap analysis → fix broken → add missing → standardize → validate → deliver
-- [ ] **FLOW-03**: Option 3 workflow (dev + mature QA): scan both → identify thin coverage → add only missing → validate → deliver
-- [ ] **FLOW-04**: Wave-based parallel execution spawns independent agents simultaneously
+- [x] **FLOW-01**: Option 1 workflow (dev-only): scan → analyze → [testid-inject if frontend] → plan → generate → validate → deliver
+- [x] **FLOW-02**: Option 2 workflow (dev + immature QA): scan both → gap analysis → fix broken → add missing → standardize → validate → deliver
+- [x] **FLOW-03**: Option 3 workflow (dev + mature QA): scan both → identify thin coverage → add only missing → validate → deliver
+- [x] **FLOW-04**: Wave-based parallel execution spawns independent agents simultaneously
 - [x] **FLOW-05**: Init system bootstraps workflow context in single command (qa-tools.cjs init <workflow>)
-- [ ] **FLOW-06**: Auto-advance chain runs full pipeline (scan→analyze→generate→validate→deliver) without interaction
-- [ ] **FLOW-07**: Checkpoint system pauses execution for human decisions and resumes with context
+- [x] **FLOW-06**: Auto-advance chain runs full pipeline (scan→analyze→generate→validate→deliver) without interaction
+- [x] **FLOW-07**: Checkpoint system pauses execution for human decisions and resumes with context
 
 ### Templates
 
@@ -121,13 +121,13 @@
 | AGENT-05 | Phase 4 | Complete |
 | AGENT-06 | Phase 4 | Complete |
 | AGENT-07 | Phase 4 | Complete |
-| FLOW-01 | Phase 5 | Pending |
-| FLOW-02 | Phase 5 | Pending |
-| FLOW-03 | Phase 5 | Pending |
-| FLOW-04 | Phase 5 | Pending |
+| FLOW-01 | Phase 5 | Complete |
+| FLOW-02 | Phase 5 | Complete |
+| FLOW-03 | Phase 5 | Complete |
+| FLOW-04 | Phase 5 | Complete |
 | FLOW-05 | Phase 5 | Complete |
-| FLOW-06 | Phase 5 | Pending |
-| FLOW-07 | Phase 5 | Pending |
+| FLOW-06 | Phase 5 | Complete |
+| FLOW-07 | Phase 5 | Complete |
 | DLVR-01 | Phase 6 | Pending |
 | DLVR-02 | Phase 6 | Pending |
 | DLVR-03 | Phase 6 | Pending |
