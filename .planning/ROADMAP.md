@@ -99,12 +99,11 @@ Plans:
   3. Option 3 workflow (dev + mature QA repo) scans both repos, identifies thin coverage areas, adds only missing tests, validates, and delivers without modifying working tests
   4. Independent agents within a pipeline stage execute in parallel (wave-based), and the init command bootstraps all workflow context in a single call
   5. Auto-advance chain runs the full pipeline without manual interaction, and checkpoint system can pause for human decisions and resume with full context preserved
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
-- [ ] 05-03: TBD
+- [ ] 05-01-PLAN.md — Init qa-start function and CLI integration for workflow bootstrapping
+- [ ] 05-02-PLAN.md — QA pipeline orchestrator with 3 workflow options, auto-advance, and checkpoint system
 
 ### Phase 6: Delivery and User Experience
 **Goal**: QA engineer runs a single slash command, the system executes the appropriate workflow, and delivers the result as a PR ready for team review
@@ -134,5 +133,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 2. QA Standards and Templates | 4/4 | Complete | 2026-03-18 |
 | 3. Discovery Agents | 2/2 | Complete | 2026-03-19 |
 | 4. Generation Agents | 2/3 | In Progress | - |
-| 5. Workflow Orchestration | 0/0 | Not started | - |
+| 5. Workflow Orchestration | 0/2 | Not started | - |
 | 6. Delivery and User Experience | 0/0 | Not started | - |
