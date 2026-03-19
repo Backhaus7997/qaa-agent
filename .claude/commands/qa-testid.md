@@ -1,46 +1,54 @@
 # Inject Test IDs
 
-Scan source code, identify interactive UI elements missing `data-testid` attributes, and inject them following the naming convention. This runs as Step 0 — before any test generation.
+Scan frontend source code, audit missing data-testid attributes, and inject them following the naming convention in CLAUDE.md. Creates a separate branch for the changes.
+
+## Usage
+
+/qa-testid <path-to-frontend-source>
+
+- path-to-frontend-source: directory containing React/Vue/Angular/HTML components
+
+## What It Produces
+
+- TESTID_AUDIT_REPORT.md -- coverage score, missing elements, proposed values by priority
+- Modified source files with data-testid attributes injected
 
 ## Instructions
 
-Use the `qa-testid-injector` skill to execute the full pipeline:
+1. Read `CLAUDE.md` -- data-testid Convention section for naming rules.
+2. Initialize context:
+   ```bash
+   node bin/qaa-tools.cjs init qa-start --dev-repo [user path]
+   ```
+3. Invoke scanner to identify component files:
 
-### Step 1: Get Target
+Task(
+  prompt="
+    <objective>Scan repository to identify frontend component files</objective>
+    <execution_context>@agents/qaa-scanner.md</execution_context>
+    <files_to_read>
+    - CLAUDE.md
+    </files_to_read>
+    <parameters>
+    user_input: $ARGUMENTS
+    </parameters>
+  "
+)
 
-Ask the user for the path to the frontend source code to scan.
+4. Invoke testid-injector agent:
 
-### Step 2: SCAN — Identify Files
-
-1. Detect framework (React, Vue, Angular, HTML) from package.json and file extensions
-2. List all component files (excluding test/spec/stories files)
-3. Prioritize by interaction density (forms > pages > layouts)
-4. Produce SCAN_MANIFEST.md
-
-### Step 3: AUDIT — Find Missing Test IDs
-
-For each file, identify elements that:
-- Are interactive (buttons, inputs, links, forms, selects)
-- Are containers (modals, dropdowns, alerts)
-- Are data display (tables, lists, badges)
-- Already have data-testid (preserve these)
-- Are missing data-testid (propose values)
-
-Classify as P0 (must have), P1 (should have), P2 (nice to have).
-Produce TESTID_AUDIT_REPORT.md.
-
-### Step 4: INJECT — Apply Test IDs
-
-Follow naming convention: `{context}-{description}-{element-type}` in kebab-case.
-Inject data-testid as the LAST attribute before closing `>`.
-Preserve all existing formatting. Only add the attribute — change nothing else.
-Produce INJECTION_CHANGELOG.md.
-
-### Step 5: VALIDATE
-
-1. Syntax check all modified files
-2. Uniqueness check (no duplicate testids per page)
-3. Convention compliance check
-4. Produce INJECTION_VALIDATION.md
+Task(
+  prompt="
+    <objective>Audit missing data-testid attributes and inject following naming convention</objective>
+    <execution_context>@agents/qaa-testid-injector.md</execution_context>
+    <files_to_read>
+    - CLAUDE.md
+    - .qa-output/SCAN_MANIFEST.md
+    </files_to_read>
+    <parameters>
+    user_input: $ARGUMENTS
+    </parameters>
+  "
+)
 
 $ARGUMENTS

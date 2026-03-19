@@ -1,57 +1,54 @@
 # QA Test Validation
 
-Run validation on existing test files. Checks syntax, structure, dependencies, and logic quality. Classifies any failures found.
+Validate existing test files against CLAUDE.md standards. Runs 4-layer validation (syntax, structure, dependencies, logic) and classifies any failures found.
+
+## Usage
+
+/qa-validate <path-to-tests> [--framework <name>]
+
+- path-to-tests: directory or specific test files to validate
+- --framework: override framework auto-detection (playwright, cypress, jest, etc.)
+
+## What It Produces
+
+- VALIDATION_REPORT.md -- pass/fail per file per validation layer, confidence level
+- FAILURE_CLASSIFICATION_REPORT.md -- if failures found, classifies as APP BUG / TEST ERROR / ENV ISSUE / INCONCLUSIVE
 
 ## Instructions
 
-### Step 1: Gather Input
+1. Read `CLAUDE.md` -- quality gates, locator tiers, assertion rules.
+2. Invoke validator agent:
 
-Ask the user for:
-1. Path to the test folder or specific test files to validate
-2. Framework being used (or auto-detect from config files)
+Task(
+  prompt="
+    <objective>Validate test files with 4-layer validation and produce VALIDATION_REPORT.md</objective>
+    <execution_context>@agents/qaa-validator.md</execution_context>
+    <files_to_read>
+    - CLAUDE.md
+    </files_to_read>
+    <parameters>
+    user_input: $ARGUMENTS
+    mode: validation
+    </parameters>
+  "
+)
 
-### Step 2: Run Validation Layers
+3. If failures detected, invoke bug-detective agent:
 
-Use the `qa-self-validator` skill to check:
+Task(
+  prompt="
+    <objective>Classify test failures and auto-fix TEST CODE ERRORS</objective>
+    <execution_context>@agents/qaa-bug-detective.md</execution_context>
+    <files_to_read>
+    - CLAUDE.md
+    - .qa-output/VALIDATION_REPORT.md
+    </files_to_read>
+    <parameters>
+    user_input: $ARGUMENTS
+    </parameters>
+  "
+)
 
-**Layer 1 — Syntax:**
-- TypeScript: `tsc --noEmit`
-- JavaScript: `node --check`
-- Python: `python -m py_compile`
-- Run linter if configured
-
-**Layer 2 — Structure:**
-- Correct directory placement
-- Naming convention compliance (CLAUDE.md standards)
-- Has actual test functions (not empty files)
-- Imports reference real modules
-- No hardcoded secrets/credentials
-
-**Layer 3 — Dependencies:**
-- All imports resolvable
-- Packages exist in package.json/requirements.txt
-- No circular dependencies in test helpers
-
-**Layer 4 — Logic:**
-- Happy path has positive assertions
-- Error tests have negative assertions
-- Setup/teardown are symmetric
-- No duplicate test IDs
-- Assertions are concrete (not toBeTruthy/toBeDefined)
-
-### Step 3: Classify Failures
-
-If test execution failures are found, use the `qa-bug-detective` skill to classify each as:
-- **APPLICATION BUG**: Error in production code path
-- **TEST CODE ERROR**: Syntax/import error in test
-- **ENVIRONMENT ISSUE**: Connection refused, timeout, missing env var
-- **INCONCLUSIVE**: Can't determine
-
-### Step 4: Report
-
-Produce `VALIDATION_REPORT.md` with:
-- Pass/fail per file per validation layer
-- Summary table
-- If failures: `FAILURE_CLASSIFICATION_REPORT.md` with detailed analysis
+4. Present results. No git operations.
 
 $ARGUMENTS

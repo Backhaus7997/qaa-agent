@@ -1,54 +1,60 @@
 # QA Repository Analysis
 
-Quick analysis-only mode. Reads repo(s) and produces QA assessment documents without generating test files or creating PRs.
+Analysis-only mode. Scans a repository, detects framework and stack, and produces QA assessment documents. No test generation. No PR creation.
+
+## Usage
+
+/qa-analyze [--dev-repo <path>] [--qa-repo <path>]
+
+- No arguments: analyzes current directory
+- --dev-repo: explicit path to developer repository
+- --qa-repo: path to existing QA repository (produces gap analysis instead of blueprint)
+
+## What It Produces
+
+- SCAN_MANIFEST.md -- file tree, framework detection, testable surfaces
+- QA_ANALYSIS.md -- architecture overview, risk assessment, testing pyramid
+- TEST_INVENTORY.md -- prioritized test cases with IDs and explicit outcomes
+- QA_REPO_BLUEPRINT.md (if no QA repo) or GAP_ANALYSIS.md (if QA repo provided)
 
 ## Instructions
 
-Analyze the target repository following ALL standards in CLAUDE.md.
+1. Read `CLAUDE.md` -- all QA standards.
+2. Initialize pipeline context:
+   ```bash
+   node bin/qaa-tools.cjs init qa-start [user arguments]
+   ```
+3. Invoke scanner agent:
 
-### Step 1: Gather Input
+Task(
+  prompt="
+    <objective>Scan repository and produce SCAN_MANIFEST.md</objective>
+    <execution_context>@agents/qaa-scanner.md</execution_context>
+    <files_to_read>
+    - CLAUDE.md
+    </files_to_read>
+    <parameters>
+    user_input: $ARGUMENTS
+    </parameters>
+  "
+)
 
-Ask the user for:
-1. Path to the DEV repo (required)
-2. Path to the QA repo (optional)
-3. Any specific areas of concern?
+4. Invoke analyzer agent:
 
-### Step 2: Repository Scan
+Task(
+  prompt="
+    <objective>Analyze repository and produce QA_ANALYSIS.md, TEST_INVENTORY.md, and blueprint or gap analysis</objective>
+    <execution_context>@agents/qaa-analyzer.md</execution_context>
+    <files_to_read>
+    - CLAUDE.md
+    - .qa-output/SCAN_MANIFEST.md
+    </files_to_read>
+    <parameters>
+    user_input: $ARGUMENTS
+    </parameters>
+  "
+)
 
-Read the DEV repo thoroughly:
-1. Root files (README, package.json/pyproject.toml/*.csproj, Dockerfile, CI configs)
-2. Entry points (controllers, routes, handlers, main files)
-3. Business logic (services, models, utils, middleware)
-4. Data layer (ORM, DB configs, migrations, schemas)
-5. Config/infra (env files, deploy configs, docker-compose)
-6. Existing tests (test folders, test configs, coverage)
-
-If a QA repo was provided, also scan:
-1. Folder structure and naming conventions
-2. Test case count, coverage areas, assertion quality
-3. POM structure and locator strategies
-4. Framework config and CI integration
-5. Test data management (fixtures, factories, env vars)
-
-### Step 3: Produce QA_ANALYSIS.md
-
-Create `QA_ANALYSIS.md` with ALL these sections:
-- **Architecture Overview**: system type, language, runtime, entry points table, internal layers, external dependencies with risk levels
-- **Risk Assessment**: HIGH / MEDIUM / LOW items with justification
-- **Top 10 Unit Test Targets**: table with module/function and rationale
-- **Recommended Testing Pyramid**: percentages adjusted to this specific app
-- **External Dependencies**: table with purpose and risk level
-
-### Step 4: Produce TEST_INVENTORY.md
-
-Create `TEST_INVENTORY.md` with concrete test cases following the testing pyramid.
-Every test case MUST have: unique ID, exact target, concrete inputs, explicit expected outcome, priority.
-
-### Step 5: Gap or Blueprint
-
-- If QA repo provided: produce `GAP_ANALYSIS.md`
-- If no QA repo: produce `QA_REPO_BLUEPRINT.md`
-
-Output all files to the current directory. No git operations.
+5. Present results to user. No git operations. No test generation.
 
 $ARGUMENTS
